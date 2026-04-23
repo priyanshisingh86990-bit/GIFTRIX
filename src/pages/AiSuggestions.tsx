@@ -1,3 +1,6 @@
+import { getRecommendations } from "../ai/recommendation"
+import { getPersonalizedFeed } from "../ai/personalized"
+import products from "../data/products"
 import { useState, useEffect } from "react";
 import { Sparkles, ChevronRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -104,7 +107,7 @@ export default function AiSuggestions() {
   }
 
   const currentQuestion = STEP_QUESTIONS[step];
-
+  const suggestions = getRecommendations(products, "Red Shoes")
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0">
       <Navbar />

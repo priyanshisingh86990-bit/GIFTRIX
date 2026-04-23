@@ -1,3 +1,4 @@
+import { processVoice } from "../ai/voice"
 import { useState, useRef, useEffect } from "react";
 import { MessageSquare, Send, Bot, User, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -170,7 +171,8 @@ export default function AiChat() {
 
     setMessages((prev) => [...prev, userMsg, assistantMsg]);
   }
-
+  const result = processVoice("red shoes under 2000")
+  console.log(result) 
   return (
     <div className="min-h-screen bg-background flex flex-col pb-14 md:pb-0">
       <Navbar />

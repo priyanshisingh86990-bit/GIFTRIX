@@ -1,3 +1,4 @@
+import { showAR } from "../ai/ar"
 import {useEffect} from "react";
 import { useState } from "react";
 import { useParams, useLocation } from "wouter";
@@ -61,6 +62,8 @@ useEffect(() => {
   }
 
   if (isLoading) {
+    const arMessage = showAR(product.name)
+    console.log(arMessage)
     return (
       <div className="min-h-screen" style={{ background: "linear-gradient(180deg,#faf5ff 0%,#f5f3ff 50%,#fdf4ff 100%)" }}>
         <Navbar />

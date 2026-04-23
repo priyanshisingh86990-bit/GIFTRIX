@@ -1,4 +1,4 @@
-export const products = [
+kexport const products = [
     //women fashion
   {
     id: 1,
