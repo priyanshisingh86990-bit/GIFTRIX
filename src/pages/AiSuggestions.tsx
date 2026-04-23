@@ -1,6 +1,6 @@
 import { getRecommendations } from "../ai/recommendation"
 import { getPersonalizedFeed } from "../ai/personalized"
-import {products} from "../data/products";
+
 import { useState, useEffect } from "react";
 import { Sparkles, ChevronRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
