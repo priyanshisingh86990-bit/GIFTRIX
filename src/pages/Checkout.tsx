@@ -63,26 +63,21 @@ export default function Checkout() {
 
         modal: {
           ondismiss: () => {
-            console.log("Closed or Failed");
+            console.log("Fallback triggered");
+
             const order = {
               id: Date.now(),
-              items: cartItems?.length ? cartItems : [{
-                productId: 1,
-                name: "Demo Product",
-                price: 500,
-                image: "https://via.placeholder.com/100",
-                quantity: 1,
-              }],
-              total: total || 500,
+              items: Array.isArray(cartItems) ? cartItems : [],
+              total: typeof total === "number" ? total : 500,
               status: "Processing",
-              shippingAddress: {
-                fullName: "Test User",
-                city: "Delhi",
-              },
               createdAt: new Date().toISOString(),
             };
-            //fallback success 
-            window.location.href = `/order-success`;
+
+            const existingOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+            existingOrders.push(order);
+            localStorage.setItem("orders", JSON.stringify(existingOrders));
+
+            window.location.href = "/order-success";
           },
         },
 
