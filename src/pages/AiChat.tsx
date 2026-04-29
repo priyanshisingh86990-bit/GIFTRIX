@@ -178,7 +178,7 @@ export default function AiChat() {
       <Navbar />
 
       {/* Header */}
-      <div className="border-b border-border bg-card/50 px-4 py-3 flex items-center gap-3">
+      <div className="border-b border bg-card/50 px-4 py-3 flex items-center gap-3">
         <div className="w-9 h-9 bg-primary/10 rounded-full flex items-center justify-center">
           <Bot className="w-5 h-5 text-primary" />
         </div>
@@ -212,7 +212,7 @@ export default function AiChat() {
                 "px-4 py-2.5 rounded-2xl text-sm",
                 msg.role === "user"
                   ? "bg-primary text-primary-foreground rounded-tr-sm"
-                  : "bg-card border border-border text-foreground rounded-tl-sm"
+                  : "bg-card border border text-foreground rounded-tl-sm"
               )}>
                 {msg.text}
               </div>
@@ -239,7 +239,7 @@ export default function AiChat() {
               <button
                 key={s}
                 onClick={() => handleSend(s)}
-                className="flex-shrink-0 px-3 py-1.5 text-xs bg-card border border-border rounded-full text-foreground hover:border-primary hover:bg-primary/5 transition-colors whitespace-nowrap"
+                className="flex-shrink-0 px-3 py-1.5 text-xs bg-card border border rounded-full text-foreground hover:border-primary hover:bg-primary/5 transition-colors whitespace-nowrap"
               >
                 {s}
               </button>
@@ -249,7 +249,7 @@ export default function AiChat() {
       )}
 
       {/* Input */}
-      <div className="px-4 py-3 border-t border-border bg-background">
+      <div className="px-4 py-3 border-t border bg-background">
         <div className="flex gap-2">
           <input
             type="text"
@@ -257,7 +257,7 @@ export default function AiChat() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            className="flex-1 px-4 py-2.5 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+            className="flex-1 px-4 py-2.5 bg-card border border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
           />
           <button
             onClick={() => handleSend()}

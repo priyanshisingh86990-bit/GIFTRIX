@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { ChevronRight, Package, ShoppingBag } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { formatPrice } from "@/lib/utils";
-import { getToken } from "@/lib/auth";
+
 
 interface Order {
   id: number;
@@ -16,27 +16,24 @@ interface Order {
 
 const STATUS_STYLES: Record<string, { color: string; bg: string; dot: string }> = {
   Processing: { color: "text-yellow-700", bg: "bg-yellow-50 border-yellow-200", dot: "bg-yellow-400" },
-  Shipped:    { color: "text-blue-700",   bg: "bg-blue-50 border-blue-200",     dot: "bg-blue-400" },
-  Delivered:  { color: "text-green-700",  bg: "bg-green-50 border-green-200",   dot: "bg-green-400" },
-  Cancelled:  { color: "text-red-700",    bg: "bg-red-50 border-red-200",       dot: "bg-red-400" },
+  Shipped: { color: "text-blue-700", bg: "bg-blue-50 border-blue-200", dot: "bg-blue-400" },
+  Delivered: { color: "text-green-700", bg: "bg-green-50 border-green-200", dot: "bg-green-400" },
+  Cancelled: { color: "text-red-700", bg: "bg-red-50 border-red-200", dot: "bg-red-400" },
 };
 
 const TABS = ["All", "Processing", "Shipped", "Delivered"];
 
 export default function Orders() {
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState("All");
 
   useEffect(() => {
-    const token = getToken();
-    if (!token) { setLoading(false); return; }
-    fetch(`${import.meta.env.VITE_API_URL || ""}/api/orders`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((r) => r.json())
-      .then((data) => { setOrders(Array.isArray(data) ? data : []); setLoading(false); })
-      .catch(() => setLoading(false));
+    const storedOrders = localStorage.getItem("orders");
+    if (storedOrders) {
+      setOrders(JSON.parse(storedOrders));
+    }
+    setLoading(false);
   }, []);
 
   const filtered = tab === "All" ? orders : orders.filter((o) => o.status === tab);
@@ -59,11 +56,10 @@ export default function Orders() {
         <div className="flex gap-2 mb-5 overflow-x-auto scrollbar-hide">
           {TABS.map((t) => (
             <button key={t} onClick={() => setTab(t)}
-              className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
-                tab === t
-                  ? "bg-violet-600 text-white"
-                  : "bg-white border border-violet-200 text-gray-600 hover:bg-violet-50"
-              }`}>
+              className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-colors ${tab === t
+                ? "bg-violet-600 text-white"
+                : "bg-white border border-violet-200 text-gray-600 hover:bg-violet-50"
+                }`}>
               {t}
             </button>
           ))}
@@ -90,10 +86,15 @@ export default function Orders() {
         ) : (
           <div className="space-y-3">
             {filtered.map((order) => {
+              const items = order.items || [];
+              const total = order.total || order.amount || 0;
+              const createdAt = order.createdAt || order.date;
               const s = STATUS_STYLES[order.status] || STATUS_STYLES["Processing"];
-              const date = new Date(order.createdAt).toLocaleDateString("en-IN", {
-                day: "2-digit", month: "short", year: "numeric"
-              });
+              const date = order.createdAt
+                ? new Date(order.createdAt || order.date).toLocaleDateString("en-IN", {
+                  day: "2-digit", month: "short", year: "numeric"
+                })
+                : "N/A";
               return (
                 <div key={order.id} className="bg-white rounded-2xl border border-violet-100 shadow-sm p-4 sm:p-5">
                   <div className="flex items-center justify-between flex-wrap gap-3">
@@ -101,7 +102,7 @@ export default function Orders() {
                       <div>
                         <p className="font-bold text-gray-800">Order ID: #{order.id}</p>
                         <p className="text-xs text-gray-400 mt-0.5">
-                          {date} &bull; {order.items.length} item{order.items.length !== 1 ? "s" : ""} &bull; {formatPrice(order.total)}
+                          {date} &bull; {(order.items?.length || 0)} item{order.items.length !== 1 ? "s" : ""} &bull; {formatPrice(order.total || order.amount || 0)}
                         </p>
                       </div>
                       <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${s.bg} ${s.color}`}>
@@ -124,11 +125,11 @@ export default function Orders() {
                   </div>
                   {/* Items preview */}
                   <div className="flex gap-2 mt-3">
-                    {order.items.slice(0, 4).map((item) => (
+                    {(order.items || []).slice(0, 4).map((item) => (
                       <img key={item.productId} src={item.image} alt={item.name}
                         className="w-10 h-10 rounded-lg object-cover border border-violet-100" />
                     ))}
-                    {order.items.length > 4 && (
+                    {(order.items?.length || 0) > 4 && (
                       <div className="w-10 h-10 rounded-lg bg-violet-100 flex items-center justify-center text-xs text-violet-600 font-bold">
                         +{order.items.length - 4}
                       </div>

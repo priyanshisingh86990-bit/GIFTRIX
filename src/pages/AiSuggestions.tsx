@@ -176,7 +176,7 @@ export default function AiSuggestions() {
             </div>
 
             {products.length === 0 ? (
-              <div className="text-center py-12 bg-card border border-border rounded-2xl">
+              <div className="text-center py-12 bg-card border border rounded-2xl">
                 <p className="text-4xl mb-3">😕</p>
                 <p className="font-medium text-foreground">No gifts found for this combination</p>
                 <p className="text-sm text-muted-foreground mt-1">Try different options</p>

@@ -25,6 +25,79 @@ export default function Checkout() {
   const subtotal = getCartTotal(cartItems);
   const discount = cartItems.length >= 3 ? 150 : 0;
   const total = subtotal - discount;
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+
+  const handlePayment = async () => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    document.body.appendChild(script);
+
+    script.onload = () => {
+      const options = {
+        key: "rzp_test_Sj9AI3BjLrmDF6",
+        amount: 50000,
+        currency: "INR",
+        name: "Giftrix",
+        description: "Demo Payment",
+
+        handler: (response: any) => {
+
+
+          localStorage.setItem("latestOrder", JSON.stringify(order));
+
+          const existingOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+          existingOrders.push(order);
+          localStorage.setItem("orders", JSON.stringify(existingOrders));
+
+          window.location.href = `/order-success`;
+        },
+
+        modal: {
+          ondismiss: () => {
+            console.log("Closed or Failed");
+            const order = {
+              id: Date.now(),
+              items: cartItems?.length ? cartItems : [{
+                productId: 1,
+                name: "Demo Product",
+                price: 500,
+                image: "https://via.placeholder.com/100",
+                quantity: 1,
+              }],
+              total: total || 500,
+              status: "Processing",
+              shippingAddress: {
+                fullName: "Test User",
+                city: "Delhi",
+              },
+              createdAt: new Date().toISOString(),
+            };
+            //fallback success 
+            window.location.href = `/order-success`;
+          },
+        },
+
+        theme: {
+          color: "#9333ea",
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
+    };
+  };
+
+
+
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
@@ -220,9 +293,9 @@ export default function Checkout() {
 
                 <button type="submit" disabled={loading || cartItems.length === 0}
                   className="w-full mt-4 py-3 rounded-xl font-bold text-white text-sm disabled:opacity-60 flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
-                  style={{ background: "linear-gradient(135deg,#7c3aed,#c026d3)" }}>
+                  style={{ background: "linear-gradient(135deg,#7c3aed,#c026d3)" }} onClick={handlePayment}>
                   {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                  Place Order
+                  Place Order & Pay
                 </button>
 
                 <div className="mt-3 text-center">
