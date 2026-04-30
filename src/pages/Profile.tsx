@@ -24,7 +24,7 @@ const SIDEBAR_LINKS = [
 export default function Profile() {
   const [, navigate] = useLocation();
   const token = getToken();
-  const [user , setUser] = useState<{ name?: string; email?:string}>({});
+  const [user, setUser] = useState<{ name?: string; email?: string }>({});
   const [orders, setOrders] = useState<Order[]>([]);
   const [copied, setCopied] = useState(false);
   const [form, setForm] = useState({ phone: "+91 98765 43210", address: "" });
@@ -37,24 +37,32 @@ export default function Profile() {
     })
       .then((r) => r.json())
       .then((data) => setOrders(Array.isArray(data) ? data : []))
-      .catch(() => {});
+      .catch(() => { });
   }, [token]);
 
   useEffect(() => {
-  if (!token) return;
+    if (!token) return;
 
-  fetch(`${import.meta.env.VITE_API_URL || ""}/api/me`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-    .then((r) => r.json())
-    .then((data) => setUser(data || {}))
-    .catch(() => {});
-}, [token]);
+    fetch(`${import.meta.env.VITE_API_URL || ""}/api/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.json())
+      .then((data) => setUser(data || {}))
+      .catch(() => { });
+  }, [token]);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   function handleLogout() { clearToken(); navigate("/login"); }
 
   function handleCopy() {
-    navigator.clipboard.writeText("WELCOME100").catch(() => {});
+    navigator.clipboard.writeText("WELCOME100").catch(() => { });
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
@@ -119,17 +127,17 @@ export default function Profile() {
             <div className="mt-4 flex justify-center">
               <div className="w-24 h-24">
                 <svg viewBox="0 0 200 220" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                  <rect x="45" y="40" width="110" height="70" rx="22" fill="white" fillOpacity="0.9"/>
-                  <circle cx="78" cy="70" r="12" fill="white"/><circle cx="122" cy="70" r="12" fill="white"/>
-                  <circle cx="78" cy="70" r="7" fill="#2563eb"/><circle cx="122" cy="70" r="7" fill="#2563eb"/>
-                  <circle cx="80" cy="68" r="2.5" fill="white"/><circle cx="124" cy="68" r="2.5" fill="white"/>
-                  <path d="M82 86 Q100 96 118 86" stroke="#7c3aed" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
-                  <rect x="50" y="100" width="100" height="78" rx="18" fill="url(#pg)"/>
-                  <line x1="100" y1="40" x2="100" y2="22" stroke="#7c3aed" strokeWidth="2.5" strokeLinecap="round"/>
-                  <circle cx="100" cy="18" r="5" fill="#c026d3"/>
-                  <rect x="18" y="108" width="30" height="15" rx="7.5" fill="#a78bfa" fillOpacity="0.5"/>
-                  <rect x="152" y="108" width="30" height="15" rx="7.5" fill="#a78bfa" fillOpacity="0.5"/>
-                  <defs><linearGradient id="pg" x1="50" y1="100" x2="150" y2="178" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#7c3aed"/><stop offset="100%" stopColor="#a855f7"/></linearGradient></defs>
+                  <rect x="45" y="40" width="110" height="70" rx="22" fill="white" fillOpacity="0.9" />
+                  <circle cx="78" cy="70" r="12" fill="white" /><circle cx="122" cy="70" r="12" fill="white" />
+                  <circle cx="78" cy="70" r="7" fill="#2563eb" /><circle cx="122" cy="70" r="7" fill="#2563eb" />
+                  <circle cx="80" cy="68" r="2.5" fill="white" /><circle cx="124" cy="68" r="2.5" fill="white" />
+                  <path d="M82 86 Q100 96 118 86" stroke="#7c3aed" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+                  <rect x="50" y="100" width="100" height="78" rx="18" fill="url(#pg)" />
+                  <line x1="100" y1="40" x2="100" y2="22" stroke="#7c3aed" strokeWidth="2.5" strokeLinecap="round" />
+                  <circle cx="100" cy="18" r="5" fill="#c026d3" />
+                  <rect x="18" y="108" width="30" height="15" rx="7.5" fill="#a78bfa" fillOpacity="0.5" />
+                  <rect x="152" y="108" width="30" height="15" rx="7.5" fill="#a78bfa" fillOpacity="0.5" />
+                  <defs><linearGradient id="pg" x1="50" y1="100" x2="150" y2="178" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#7c3aed" /><stop offset="100%" stopColor="#a855f7" /></linearGradient></defs>
                 </svg>
               </div>
             </div>

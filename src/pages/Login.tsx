@@ -13,27 +13,35 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
-  
+
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
-  setError("");
-  setIsLoading(true);
+    e.preventDefault();
 
-  try {
-    // 👉 TEMP LOGIN (no backend)
     const fakeToken = "demo-user-token";
 
-    setToken(fakeToken);
-    navigate("/explore");
+    // force save
+    localStorage.setItem("token", fakeToken);
+    // ✅ USER SAVE (IMPORTANT)
+    const finalName =
+      name ||
+      email.split("@")[0].replace(/[0-9]/g, "").replace(/[^a-zA-Z]/g, " ");
 
-  } catch (err: any) {
-    setError("Something went wrong");
-  } finally {
-    setIsLoading(false);
+    localStorage.setItem("user", JSON.stringify({
+      name: finalName,
+      email: email
+    }));
+
+    // ✅ YEH LINE ADD KAR (IMPORTANT)
+    window.dispatchEvent(new Event("storage"));
+
+
+    // 🔥 HARD REDIRECT (bypass all router bugs)
+    window.location.href = "/explore";
   }
-}
+
+
 
   return (
     <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4"
@@ -56,7 +64,7 @@ export default function Login() {
 
       {/* Main card */}
       <div className="relative w-full max-w-4xl bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden min-h-[560px] flex">
-        
+
         {/* Left: Form */}
         <div className="flex-1 p-8 sm:p-12 flex flex-col justify-center">
           {/* Logo */}
@@ -129,7 +137,7 @@ export default function Login() {
             )}
 
             <button
-              type="submit"
+              type="submit" onClick={handleSubmit}
               disabled={isLoading}
               className="w-full py-3 rounded-xl font-semibold text-sm text-white flex items-center justify-center gap-2 transition-opacity hover:opacity-90 disabled:opacity-60"
               style={{ background: "linear-gradient(135deg, #7c3aed, #9333ea, #c026d3)" }}
@@ -183,46 +191,46 @@ export default function Login() {
             <div className="w-48 h-48 flex items-center justify-center">
               <svg viewBox="0 0 200 220" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-xl">
                 {/* Body */}
-                <rect x="50" y="100" width="100" height="80" rx="20" fill="white" fillOpacity="0.9"/>
-                <rect x="55" y="105" width="90" height="70" rx="16" fill="url(#bodyGrad)"/>
+                <rect x="50" y="100" width="100" height="80" rx="20" fill="white" fillOpacity="0.9" />
+                <rect x="55" y="105" width="90" height="70" rx="16" fill="url(#bodyGrad)" />
                 {/* Head */}
-                <rect x="45" y="40" width="110" height="70" rx="22" fill="white" fillOpacity="0.95"/>
-                <rect x="50" y="45" width="100" height="60" rx="18" fill="url(#headGrad)"/>
+                <rect x="45" y="40" width="110" height="70" rx="22" fill="white" fillOpacity="0.95" />
+                <rect x="50" y="45" width="100" height="60" rx="18" fill="url(#headGrad)" />
                 {/* Eyes */}
-                <circle cx="78" cy="72" r="14" fill="white"/>
-                <circle cx="122" cy="72" r="14" fill="white"/>
-                <circle cx="78" cy="72" r="8" fill="#2563eb"/>
-                <circle cx="122" cy="72" r="8" fill="#2563eb"/>
-                <circle cx="81" cy="69" r="3" fill="white"/>
-                <circle cx="125" cy="69" r="3" fill="white"/>
+                <circle cx="78" cy="72" r="14" fill="white" />
+                <circle cx="122" cy="72" r="14" fill="white" />
+                <circle cx="78" cy="72" r="8" fill="#2563eb" />
+                <circle cx="122" cy="72" r="8" fill="#2563eb" />
+                <circle cx="81" cy="69" r="3" fill="white" />
+                <circle cx="125" cy="69" r="3" fill="white" />
                 {/* Smile */}
-                <path d="M82 88 Q100 98 118 88" stroke="white" strokeWidth="3" strokeLinecap="round" fill="none"/>
+                <path d="M82 88 Q100 98 118 88" stroke="white" strokeWidth="3" strokeLinecap="round" fill="none" />
                 {/* Antenna */}
-                <line x1="100" y1="40" x2="100" y2="20" stroke="white" strokeWidth="3" strokeLinecap="round"/>
-                <circle cx="100" cy="16" r="6" fill="#c026d3"/>
+                <line x1="100" y1="40" x2="100" y2="20" stroke="white" strokeWidth="3" strokeLinecap="round" />
+                <circle cx="100" cy="16" r="6" fill="#c026d3" />
                 {/* Arms */}
-                <rect x="15" y="110" width="35" height="18" rx="9" fill="white" fillOpacity="0.85"/>
-                <rect x="150" y="110" width="35" height="18" rx="9" fill="white" fillOpacity="0.85"/>
+                <rect x="15" y="110" width="35" height="18" rx="9" fill="white" fillOpacity="0.85" />
+                <rect x="150" y="110" width="35" height="18" rx="9" fill="white" fillOpacity="0.85" />
                 {/* Gift box held */}
-                <rect x="158" y="90" width="26" height="22" rx="4" fill="#f0abfc"/>
-                <rect x="158" y="90" width="26" height="8" rx="4" fill="#c026d3"/>
-                <line x1="171" y1="90" x2="171" y2="112" stroke="#c026d3" strokeWidth="2"/>
+                <rect x="158" y="90" width="26" height="22" rx="4" fill="#f0abfc" />
+                <rect x="158" y="90" width="26" height="8" rx="4" fill="#c026d3" />
+                <line x1="171" y1="90" x2="171" y2="112" stroke="#c026d3" strokeWidth="2" />
                 {/* Chest screen */}
-                <rect x="72" y="120" width="56" height="36" rx="8" fill="white" fillOpacity="0.3"/>
-                <circle cx="84" cy="133" r="5" fill="#7c3aed" fillOpacity="0.6"/>
-                <circle cx="100" cy="133" r="5" fill="#a855f7" fillOpacity="0.6"/>
-                <circle cx="116" cy="133" r="5" fill="#c026d3" fillOpacity="0.6"/>
+                <rect x="72" y="120" width="56" height="36" rx="8" fill="white" fillOpacity="0.3" />
+                <circle cx="84" cy="133" r="5" fill="#7c3aed" fillOpacity="0.6" />
+                <circle cx="100" cy="133" r="5" fill="#a855f7" fillOpacity="0.6" />
+                <circle cx="116" cy="133" r="5" fill="#c026d3" fillOpacity="0.6" />
                 {/* Feet */}
-                <rect x="65" y="175" width="28" height="16" rx="8" fill="white" fillOpacity="0.7"/>
-                <rect x="107" y="175" width="28" height="16" rx="8" fill="white" fillOpacity="0.7"/>
+                <rect x="65" y="175" width="28" height="16" rx="8" fill="white" fillOpacity="0.7" />
+                <rect x="107" y="175" width="28" height="16" rx="8" fill="white" fillOpacity="0.7" />
                 <defs>
                   <linearGradient id="bodyGrad" x1="50" y1="100" x2="150" y2="180" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stopColor="#8b5cf6"/>
-                    <stop offset="100%" stopColor="#a855f7"/>
+                    <stop offset="0%" stopColor="#8b5cf6" />
+                    <stop offset="100%" stopColor="#a855f7" />
                   </linearGradient>
                   <linearGradient id="headGrad" x1="45" y1="40" x2="155" y2="110" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stopColor="#7c3aed"/>
-                    <stop offset="100%" stopColor="#9333ea"/>
+                    <stop offset="0%" stopColor="#7c3aed" />
+                    <stop offset="100%" stopColor="#9333ea" />
                   </linearGradient>
                 </defs>
               </svg>

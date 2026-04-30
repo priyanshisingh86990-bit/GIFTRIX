@@ -9,13 +9,12 @@ interface ProtectedRouteProps {
 export default function ProtectedRoute({ component: Component }: ProtectedRouteProps) {
   const [, navigate] = useLocation();
 
-  useEffect(() => {
-    if (!isLoggedIn()) {
+  useEffect(()=>{
+    if (!isLoggedIn()){
       navigate("/login");
     }
   }, [navigate]);
-
-  if (!isLoggedIn()) {
+  if (!isLoggedIn()){
     return null;
   }
 

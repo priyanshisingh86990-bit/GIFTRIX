@@ -1,15 +1,15 @@
 export function getToken(): string | null {
-  return localStorage.getItem("giftrix_token");
+  return localStorage.getItem("token"); // ✅ FIX
 }
 
 export function setToken(token: string): void {
-  localStorage.setItem("giftrix_token", token);
+  localStorage.setItem("token", token); // ✅ same
 }
 
 export function clearToken(): void {
-  localStorage.removeItem("giftrix_token");
+  localStorage.removeItem("token"); // ✅ FIX
 }
 
-export function isLoggedIn(): boolean {
-  return !!getToken();
-}
+export const isLoggedIn = () => {
+  return !!localStorage.getItem("token"); // ✅ already correct
+};
