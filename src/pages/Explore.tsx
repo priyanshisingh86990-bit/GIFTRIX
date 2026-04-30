@@ -28,20 +28,20 @@ const SIDEBAR_OCCASIONS = [
 ];
 
 const CATEGORY_META: Record<string, { icon: string; bg: string }> = {
-  "fashion":        { icon: "👗", bg: "from-pink-100 to-rose-50" },
-  "accessories":    { icon: "💍", bg: "from-violet-100 to-purple-50" },
-  "beauty":         { icon: "💄", bg: "from-fuchsia-100 to-pink-50" },
-  "cute gifts":     { icon: "🧸", bg: "from-amber-100 to-yellow-50" },
-  "food":           { icon: "🍫", bg: "from-orange-100 to-amber-50" },
-  "home decor":     { icon: "🏡", bg: "from-teal-100 to-emerald-50" },
+  "fashion": { icon: "👗", bg: "from-pink-100 to-rose-50" },
+  "accessories": { icon: "💍", bg: "from-violet-100 to-purple-50" },
+  "beauty": { icon: "💄", bg: "from-fuchsia-100 to-pink-50" },
+  "cute gifts": { icon: "🧸", bg: "from-amber-100 to-yellow-50" },
+  "food": { icon: "🍫", bg: "from-orange-100 to-amber-50" },
+  "home decor": { icon: "🏡", bg: "from-teal-100 to-emerald-50" },
   "surprise gifts": { icon: "🎉", bg: "from-blue-100 to-indigo-50" },
-  "men":            { icon: "🎩", bg: "from-slate-100 to-gray-50" },
+  "men": { icon: "🎩", bg: "from-slate-100 to-gray-50" },
 };
 
 const SPECIAL_OFFERS = [
-  { label: "For Him",     relation: "husband",  bg: "from-blue-400 to-indigo-500",   emoji: "🎩" },
-  { label: "For Her",     relation: "wife",     bg: "from-pink-400 to-rose-500",     emoji: "👒" },
-  { label: "For Parents", relation: "mother",   bg: "from-violet-400 to-purple-500", emoji: "👨‍👩‍👧" },
+  { label: "For Him", relation: "husband", bg: "from-blue-400 to-indigo-500", emoji: "🎩" },
+  { label: "For Her", relation: "wife", bg: "from-pink-400 to-rose-500", emoji: "👒" },
+  { label: "For Parents", relation: "mother", bg: "from-violet-400 to-purple-500", emoji: "👨‍👩‍👧" },
 ];
 
 type Filters = {
@@ -53,7 +53,7 @@ type Filters = {
   tag?: string;
 };
 
-const allProducts=products;
+const allProducts = products;
 
 function CheckItem({ label, checked, onChange }: { label: string; checked: boolean; onChange: () => void }) {
   return (
@@ -65,7 +65,7 @@ function CheckItem({ label, checked, onChange }: { label: string; checked: boole
           checked ? "bg-violet-600 border-violet-600" : "border-gray-300 group-hover:border-violet-400"
         )}
       >
-        {checked && <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 10 10"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+        {checked && <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 10 10"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>}
       </div>
       <span className="text-sm text-gray-700 group-hover:text-gray-900">{label}</span>
     </label>
@@ -110,26 +110,60 @@ export default function Explore() {
 
 
   const [allProducts, setAllProducts] = useState<any[]>([]);
-const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-useEffect(() => {
-  setIsLoading(true);
-  fetch("/api/products")
-    .then((res) => res.json())
-    .then((data) => {
-      setAllProducts(Array.isArray(data) ? data : []);
-      setIsLoading(false);
-    })
-    .catch(() => setIsLoading(false));
-}, []);
-  const filteredProducts = products;
-const recommended = allProducts.slice(0, 4);
-const categories = [
-  { name: "fashion" },
-  { name: "accessories" },
-  { name: "beauty" },
-  { name: "home decor" },
-];
+  useEffect(() => {
+    setIsLoading(true);
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => {
+        setAllProducts(Array.isArray(data) ? data : []);
+        setIsLoading(false);
+      })
+      .catch(() => setIsLoading(false));
+  }, []);
+  const source = products.length ? products : allProducts;
+
+ const filteredProducts = source.filter((p) => {
+  const name = (p.name || "").toLowerCase();
+  const category = (p.category || "").toLowerCase();
+  const relation = (p.relation || "").toLowerCase();
+  const occasion = (p.occasion || "").toLowerCase();
+  const price = Number(p.price) || 0;
+
+  const matchesSearch =
+    !debouncedSearch ||
+    name.includes(debouncedSearch.toLowerCase());
+
+  const matchesCategory =
+    !filters.category ||
+    category.includes(filters.category.toLowerCase());
+
+  const matchesRelation =
+  !filters.relation || relation.includes(filters.relation);
+
+const matchesOccasion =
+  !filters.occasion || occasion.includes(filters.occasion);
+
+  const matchesPrice =
+    (!filters.minPrice || price >= filters.minPrice) &&
+    (!filters.maxPrice || price <= filters.maxPrice);
+
+  return (
+    matchesSearch &&
+    matchesCategory &&
+    matchesRelation &&
+    matchesOccasion &&
+    matchesPrice
+  );
+});
+  const recommended = allProducts.slice(0, 4);
+  const categories = [
+    { name: "fashion" },
+    { name: "accessories" },
+    { name: "beauty" },
+    { name: "home decor" },
+  ];
 
   const hasActiveFilters = Object.values(filters).some((v) => v !== undefined) || debouncedSearch.length > 1;
 
@@ -217,26 +251,26 @@ const categories = [
             {/* Robot mascot */}
             <div className="w-20 h-20 md:w-28 md:h-28 drop-shadow-2xl">
               <svg viewBox="0 0 200 220" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                <rect x="50" y="100" width="100" height="80" rx="20" fill="white" fillOpacity="0.15"/>
-                <rect x="55" y="105" width="90" height="70" rx="16" fill="white" fillOpacity="0.25"/>
-                <rect x="45" y="40" width="110" height="70" rx="22" fill="white" fillOpacity="0.9"/>
-                <circle cx="78" cy="70" r="14" fill="white"/>
-                <circle cx="122" cy="70" r="14" fill="white"/>
-                <circle cx="78" cy="70" r="8" fill="#2563eb"/>
-                <circle cx="122" cy="70" r="8" fill="#2563eb"/>
-                <circle cx="81" cy="67" r="3" fill="white"/>
-                <circle cx="125" cy="67" r="3" fill="white"/>
-                <path d="M82 86 Q100 96 118 86" stroke="#7c3aed" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
-                <line x1="100" y1="40" x2="100" y2="22" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
-                <circle cx="100" cy="18" r="6" fill="#fbbf24"/>
-                <rect x="18" y="108" width="32" height="16" rx="8" fill="white" fillOpacity="0.4"/>
-                <rect x="150" y="108" width="32" height="16" rx="8" fill="white" fillOpacity="0.4"/>
-                <rect x="70" y="118" width="60" height="36" rx="10" fill="white" fillOpacity="0.15"/>
-                <circle cx="84" cy="132" r="5" fill="white" fillOpacity="0.5"/>
-                <circle cx="100" cy="132" r="5" fill="white" fillOpacity="0.6"/>
-                <circle cx="116" cy="132" r="5" fill="white" fillOpacity="0.5"/>
-                <rect x="63" y="174" width="30" height="15" rx="7.5" fill="white" fillOpacity="0.4"/>
-                <rect x="107" y="174" width="30" height="15" rx="7.5" fill="white" fillOpacity="0.4"/>
+                <rect x="50" y="100" width="100" height="80" rx="20" fill="white" fillOpacity="0.15" />
+                <rect x="55" y="105" width="90" height="70" rx="16" fill="white" fillOpacity="0.25" />
+                <rect x="45" y="40" width="110" height="70" rx="22" fill="white" fillOpacity="0.9" />
+                <circle cx="78" cy="70" r="14" fill="white" />
+                <circle cx="122" cy="70" r="14" fill="white" />
+                <circle cx="78" cy="70" r="8" fill="#2563eb" />
+                <circle cx="122" cy="70" r="8" fill="#2563eb" />
+                <circle cx="81" cy="67" r="3" fill="white" />
+                <circle cx="125" cy="67" r="3" fill="white" />
+                <path d="M82 86 Q100 96 118 86" stroke="#7c3aed" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+                <line x1="100" y1="40" x2="100" y2="22" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+                <circle cx="100" cy="18" r="6" fill="#fbbf24" />
+                <rect x="18" y="108" width="32" height="16" rx="8" fill="white" fillOpacity="0.4" />
+                <rect x="150" y="108" width="32" height="16" rx="8" fill="white" fillOpacity="0.4" />
+                <rect x="70" y="118" width="60" height="36" rx="10" fill="white" fillOpacity="0.15" />
+                <circle cx="84" cy="132" r="5" fill="white" fillOpacity="0.5" />
+                <circle cx="100" cy="132" r="5" fill="white" fillOpacity="0.6" />
+                <circle cx="116" cy="132" r="5" fill="white" fillOpacity="0.5" />
+                <rect x="63" y="174" width="30" height="15" rx="7.5" fill="white" fillOpacity="0.4" />
+                <rect x="107" y="174" width="30" height="15" rx="7.5" fill="white" fillOpacity="0.4" />
               </svg>
             </div>
           </div>
@@ -342,7 +376,7 @@ const categories = [
             <>
               <div className="flex items-center justify-between mb-4">
                 <p className="text-sm text-gray-500">
-                  {isLoading ? "Finding gifts..." : `${products.length} gifts found`}
+                  {isLoading ? "Finding gifts..." : `${(filteredProducts.length || source.length)} gifts found`}
                   {debouncedSearch.length > 1 && ` for "${debouncedSearch}"`}
                 </p>
                 <button onClick={clearFilters} className="text-xs font-semibold text-violet-600 flex items-center gap-1 hover:underline">
@@ -363,9 +397,16 @@ const categories = [
                     </div>
                   ))}
                 </div>
-              ) : products.length === 0 ? (
+              ) : false ? (
                 <div className="text-center py-16">
                   <p className="text-4xl mb-3">🎁</p>
+                  {true  && (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {products.map((product) => (
+                        <ProductCard key={product.id} product={product} />
+                      ))}
+                    </div>
+                  )}
                   <p className="font-semibold text-gray-800">No gifts found</p>
                   <p className="text-sm text-gray-500 mt-1">Try a different search or adjust filters</p>
                   <button onClick={clearFilters} className="mt-4 px-5 py-2 bg-violet-600 text-white rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity">
@@ -374,7 +415,7 @@ const categories = [
                 </div>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {products.map((product) => (
+                  {filteredProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
                 </div>
