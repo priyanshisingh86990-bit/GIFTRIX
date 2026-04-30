@@ -2,6 +2,7 @@ import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+
 import Home from "@/pages/Home";
 import Explore from "@/pages/Explore";
 import Login from "@/pages/Login";
@@ -17,23 +18,58 @@ import NotFound from "@/pages/not-found";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: 1, staleTime: 1000 * 60 * 2 } },
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      staleTime: 1000 * 60 * 2,
+    },
+  },
 });
 
 function Router() {
   return (
     <Switch>
+      {/* Public Routes */}
       <Route path="/" component={Home} />
       <Route path="/login" component={Login} />
-      <Route path="/explore">{() => <ProtectedRoute component={Explore} />}</Route>
-      <Route path="/product/:id">{() => <ProtectedRoute component={ProductDetail} />}</Route>
-      <Route path="/ai-suggestions">{() => <ProtectedRoute component={AiSuggestions} />}</Route>
-      <Route path="/ai-chat">{() => <ProtectedRoute component={AiChat} />}</Route>
-      <Route path="/cart">{() => <ProtectedRoute component={Cart} />}</Route>
-      <Route path="/checkout">{() => <ProtectedRoute component={Checkout} />}</Route>
-      <Route path="/order-success">{() => <ProtectedRoute component={OrderSuccess} />}</Route>
-      <Route path="/orders">{() => <ProtectedRoute component={Orders} />}</Route>
-      <Route path="/profile">{() => <ProtectedRoute component={Profile} />}</Route>
+
+      {/* ✅ IMPORTANT: Product page PUBLIC hona chahiye */}
+      <Route path="/product/:id" component={ProductDetail} />
+
+      {/* Protected Routes */}
+      <Route path="/explore">
+        {() => <ProtectedRoute component={Explore} />}
+      </Route>
+
+      <Route path="/ai-suggestions">
+        {() => <ProtectedRoute component={AiSuggestions} />}
+      </Route>
+
+      <Route path="/ai-chat">
+        {() => <ProtectedRoute component={AiChat} />}
+      </Route>
+
+      <Route path="/cart">
+        {() => <ProtectedRoute component={Cart} />}
+      </Route>
+
+      <Route path="/checkout">
+        {() => <ProtectedRoute component={Checkout} />}
+      </Route>
+
+      <Route path="/order-success">
+        {() => <ProtectedRoute component={OrderSuccess} />}
+      </Route>
+
+      <Route path="/orders">
+        {() => <ProtectedRoute component={Orders} />}
+      </Route>
+
+      <Route path="/profile">
+        {() => <ProtectedRoute component={Profile} />}
+      </Route>
+
+      {/* Fallback */}
       <Route component={NotFound} />
     </Switch>
   );
