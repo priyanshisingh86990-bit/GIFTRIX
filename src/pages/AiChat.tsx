@@ -33,7 +33,10 @@ const SUGGESTIONS = [
   "Festive hamper under ₹2000",
 ];
 
-const allProducts=products;
+// const allProducts=products;
+import { products as localProducts } from "@/data/products";
+
+const allProducts = localProducts;
 
 function parseGiftQuery(text: string, products: ListProductsResponseItem[]): {
   relation?: string;
@@ -80,7 +83,8 @@ function generateResponse(
 ): { text: string; results: ListProductsResponseItem[] } {
   const { relation, occasion, maxPrice } = parseGiftQuery(query, products);
 
-  let filtered = [...products];
+  // let filtered = [...products];
+  let filtered = products.length ? [...products] : [...allProducts];
 
   if (relation) {
     filtered = filtered.filter((p) =>
@@ -136,14 +140,16 @@ export default function AiChat() {
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const [products, setProducts] = useState<ListProductsResponseItem[]>([]);
+  // const [products, setProducts] = useState<ListProductsResponseItem[]>([]);
+  const [products, setProducts] = useState<ListProductsResponseItem[]>(allProducts);
 
-  useEffect(() => {
-    fetch("/api/products")
-      .then((res) => res.json())
-      .then((data) => setProducts(Array.isArray(data) ? data : []))
-      .catch(() => { });
-  }, []);
+  // useEffect(() => {
+  //   fetch("/api/products")
+  //     .then((res) => res.json())
+  //     .then((data) => setProducts(Array.isArray(data) ? data : []))
+  //     .catch(() => { });
+  // }, []);
+
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
