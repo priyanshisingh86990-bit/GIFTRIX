@@ -6,7 +6,7 @@ import { Sparkles, ChevronRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import ProductCard from "@/components/ProductCard";
 import { cn } from "@/lib/utils";
-import { products } from "@/data/products.ts";
+import { products } from "@/data/products.ts"
 const STEP_QUESTIONS = [
   {
     id: "relation",
@@ -65,29 +65,76 @@ export default function AiSuggestions() {
     if (!done) return;
 
     fetch("/api/products")
-      .then((res) => res.json())
-      .then((data) => {
-        let filtered = Array.isArray(data) ? data : [];
+//       .then((res) => res.json())
+//       .then((data) => {
+//         let filtered = Array.isArray(data) ? data : [];
+//       let result = filtered.filter((p) =>
+//   (!answers.relation || p.relation === answers.relation) &&
+//   (!answers.occasion || p.occasion === answers.occasion) &&
+//   p.price >= budgetMin &&
+//   p.price <= budgetMax
+// );
 
-        if (answers.relation) {
-          filtered = filtered.filter((p) =>
-            p.relations?.includes(answers.relation)
-          );
-        }
+// // fallback 1
+// if (result.length === 0) {
+//   result = filtered.filter((p) =>
+//     (!answers.relation || p.relation === answers.relation) &&
+//     p.price >= budgetMin &&
+//     p.price <= budgetMax
+//   );
+// }
 
-        if (answers.occasion) {
-          filtered = filtered.filter((p) =>
-            p.occasions?.includes(answers.occasion)
-          );
-        }
+// // fallback 2
+// if (result.length === 0) {
+//   result = filtered;
+// }
 
-        filtered = filtered.filter(
-          (p) => p.price >= budgetMin && p.price <= budgetMax
-        );
+// setProducts(result);  
+//       //   if (answers.relation) {
+//       //     filtered = filtered.filter((p) =>
+//       //       // p.relations?.includes(answers.relation)
+//       //     p.relation===answers.relation
+//       //     );
+//       //   }
 
-        setProducts(filtered);
-      })
-      .catch(() => { });
+//       //   if (answers.occasion) {
+//       //     filtered = filtered.filter((p) =>
+//       //       // p.occasions?.includes(answers.occasion)
+//       //     p.occasion === answers.occasion
+//       //     );
+//       //   }
+
+//       //   filtered = filtered.filter(
+//       //     (p) => p.price >= budgetMin && p.price <= budgetMax
+//       //   );
+
+//       //   setProducts(filtered);
+//       })
+//       .catch(() => { });
+let filtered = allProducts;
+
+let result = filtered.filter((p) => {
+  const relationMatch =
+    !answers.relation ||
+    p.relation === answers.relation ||
+    p.relations?.includes(answers.relation);
+
+  const occasionMatch =
+    !answers.occasion ||
+    p.occasion === answers.occasion ||
+    p.occasions?.includes(answers.occasion);
+
+  const priceMatch =
+    p.price >= budgetMin && p.price <= budgetMax;
+
+  return relationMatch && occasionMatch && priceMatch;
+});
+
+if (result.length === 0) {
+  result = filtered.slice(0, 6); // fallback
+}
+
+setProducts(result);
   }, [done, answers]);
 
   function handleAnswer(key: string, value: string) {
