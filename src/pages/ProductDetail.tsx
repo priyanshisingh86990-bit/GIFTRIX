@@ -11,6 +11,7 @@ import { formatPrice } from "@/lib/utils";
 import { addToCart } from "@/lib/cart";
 import { trackProductClick, trackCategory } from "@/lib/preferences";
 import { Link } from "wouter";
+import ProductChatbot from "@/components/ProductChatbot";
 
 
 export default function ProductDetail() {
@@ -256,6 +257,9 @@ useEffect(() => {
     product={arOpen ? { id: product.id, name: product.name, image: product.image, price: product.price } : null}
     onClose={() => setArOpen(false)}
   />
+<div className = "mt-6"><ProductChatbot productName={product.name} /></div>
 </>
+
+
 
 );}
