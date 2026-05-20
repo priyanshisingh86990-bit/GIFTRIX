@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-export default function ProductChatbot({ productName }: { productName: string }) {
+export default function ProductChatbot({ product }: { product: any }) {
   const [messages, setMessages] = useState([
-    { sender: "bot", text: `Hi! Ask me anything about ${productName} 😊` }
+    { sender: "bot", text: `Hi! Ask me anything about ${product.name} 😊` }
   ]);
   const [input, setInput] = useState("");
 
@@ -12,11 +12,11 @@ export default function ProductChatbot({ productName }: { productName: string })
     const userMessage = { sender: "user", text: input };
 
     // 👉 simple smart replies
-    let botReply = `AI Suggestion : ${productName} is great for gifting`;
+    let botReply = `AI Suggestion : ${product.name} is great for gifting`;
 
 
     if (input.toLowerCase().includes("price")) {
-      botReply = "This product costs ₹5,999 💸";
+      botReply = `This product costs ₹${product.price} 💸`;
     } else if (input.toLowerCase().includes("gift")) {
       botReply = "Perfect for birthday & festive gifting 🎁";
     } else if (input.toLowerCase().includes("material")) {

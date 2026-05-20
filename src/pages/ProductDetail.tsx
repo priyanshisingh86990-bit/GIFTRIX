@@ -257,9 +257,7 @@ useEffect(() => {
     product={arOpen ? { id: product.id, name: product.name, image: product.image, price: product.price } : null}
     onClose={() => setArOpen(false)}
   />
-<div className = "mt-6"><ProductChatbot productName={product.name} /></div>
+<div className = "mt-6"><ProductChatbot product={product} /></div>
 </>
-
-
-
-);}
+  );
+}
